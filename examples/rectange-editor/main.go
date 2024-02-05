@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/anton2920/imgo"
+	"github.com/anton2920/imgo/gr"
 )
 
 type AppRect struct {
@@ -20,13 +21,10 @@ const (
 )
 
 var (
-	ui *imgo.UI
-
 	Rects        [MaxNumRects]*AppRect
 	NumRects     int
 	SelectedRect int = SelectedNone
-
-	ActiveRect *AppRect
+	ActiveRect   *AppRect
 
 	NewRectPos = 120
 
@@ -46,23 +44,20 @@ func abs(x int) int {
 	return x
 }
 
-func GetCreatedRectLocation(size int) int {
-	screen := ui.GUI.GR.GetOutput()
-
+func GetCreatedRectLocation(window *imgo.Window, size int) int {
 	NewRectPos += 20
-	if (NewRectPos+size > screen.Width) || (NewRectPos+size > screen.Height) {
+	if (NewRectPos+size > window.Width()) || (NewRectPos+size > window.Height()) {
 		NewRectPos = 100
 	}
-
 	return NewRectPos
 }
 
-func MakeRect() {
+func MakeRect(window *imgo.Window) {
 	r := new(AppRect)
 	Rects[NumRects] = r
 
 	const size = 100
-	location := GetCreatedRectLocation(size)
+	location := GetCreatedRectLocation(window, size)
 	r.X0 = location
 	r.Y0 = location
 	r.X1 = r.X0 + size
@@ -71,7 +66,7 @@ func MakeRect() {
 	if SelectedRect != SelectedNone {
 		r.Color = Rects[SelectedRect].Color
 	} else {
-		r.Color = imgo.ColorRGB(200, 100, 200)
+		r.Color = gr.ColorRGB(200, 100, 200)
 	}
 	r.HotAlpha = 255
 
@@ -102,7 +97,8 @@ func DeleteRect() {
 	SelectedRect = SelectedNone
 }
 
-func EditSelection() {
+func EditSelection(window *imgo.Window) {
+	ui := &window.UI
 	r := Rects[SelectedRect]
 
 	if NumRects < MaxNumRects {
@@ -113,9 +109,9 @@ func EditSelection() {
 
 	ui.ButtonToggle("Show Values", "Hide Values", &Numeric)
 
-	R = int(r.Color.RedComponent() >> 4)
-	G = int(r.Color.GreenComponent() >> 4)
-	B = int(r.Color.BlueComponent() >> 4)
+	R = int(r.Color.R() >> 4)
+	G = int(r.Color.G() >> 4)
+	B = int(r.Color.B() >> 4)
 
 	ui.SliderIntDisplay("red", 0, 15, &R, Numeric)
 	ui.SliderIntDisplay("green", 0, 15, &G, Numeric)
@@ -125,14 +121,16 @@ func EditSelection() {
 	G = G<<4 + 8
 	B = B<<4 + 8
 
-	r.Color = imgo.ColorRGB(byte(R), byte(G), byte(B))
+	r.Color = gr.ColorRGB(byte(R), byte(G), byte(B))
 
 	if ui.Button(imgo.ID(&DeleteRectID), "Delete Selected") {
 		DeleteRect()
 	}
 }
 
-func DoRect(n int, fadeRate float32) {
+func DoRect(window *imgo.Window, n int, fadeRate float32) {
+	ui := &window.UI
+
 	handleSize := 5
 	r := Rects[n]
 
@@ -175,14 +173,14 @@ func DoRect(n int, fadeRate float32) {
 	} else {
 		r.HotAlpha = byte(max(int(float32(r.HotAlpha)-float32(80)*fadeRate), 200))
 	}
-	ui.GUI.GraphSolidRect(r.X0, r.Y0, r.X1, r.Y1, (r.Color&0x00FFFFFF)|imgo.Color(r.HotAlpha)<<24)
+	ui.Renderer.GraphSolidRect(r.X0, r.Y0, r.X1, r.Y1, (r.Color&0x00FFFFFF)|gr.Color(r.HotAlpha)<<24)
 
 	if ui.IsHot {
-		ui.GUI.GraphRect(r.X0+0, r.Y0+0, r.X1-0, r.Y1-0, imgo.ColorBlack)
-		ui.GUI.GraphRect(r.X0+1, r.Y0+1, r.X1-1, r.Y1-1, imgo.ColorWhite)
-		ui.GUI.GraphRect(r.X0+2, r.Y0+2, r.X1-2, r.Y1-2, imgo.ColorBlack)
+		ui.Renderer.GraphRect(r.X0+0, r.Y0+0, r.X1-0, r.Y1-0, gr.ColorBlack)
+		ui.Renderer.GraphRect(r.X0+1, r.Y0+1, r.X1-1, r.Y1-1, gr.ColorWhite)
+		ui.Renderer.GraphRect(r.X0+2, r.Y0+2, r.X1-2, r.Y1-2, gr.ColorBlack)
 	} else {
-		ui.GUI.GraphRect(r.X0+0, r.Y0+0, r.X1-0, r.Y1-0, imgo.ColorBlack)
+		ui.Renderer.GraphRect(r.X0+0, r.Y0+0, r.X1-0, r.Y1-0, gr.ColorBlack)
 	}
 
 	if ui.IsActive {
@@ -190,22 +188,22 @@ func DoRect(n int, fadeRate float32) {
 	}
 }
 
-func AppUpdate(fadeRate float32) {
+func AppUpdate(window *imgo.Window, fadeRate float32) {
+	ui := &window.UI
 	ui.Begin()
 
-	screen := ui.GUI.GR.GetOutput()
-	ui.GUI.GR.DrawRectSolid(0, 0, screen.Width, screen.Height, imgo.ColorWhite)
+	ui.Renderer.GraphSolidRectWH(0, 0, window.Width(), window.Height(), gr.ColorWhite)
 
-	for i := 0; i < screen.Height; i += 10 {
-		ui.GUI.GR.DrawHLine(i, 0, screen.Width, imgo.ColorRGB(225, 255, 230))
+	for i := 0; i < window.Height(); i += 10 {
+		ui.Renderer.GraphHLine(i, 0, window.Width(), gr.ColorRGB(225, 255, 230))
 	}
 
-	if ui.ButtonLogicRect(imgo.ID(&AppUpdateID), 0, 0, screen.Width, screen.Height) {
+	if ui.ButtonLogicRect(imgo.ID(&AppUpdateID), 0, 0, window.Width(), window.Height()) {
 		SelectedRect = SelectedNone
 	}
 
 	for i := 0; i < NumRects; i++ {
-		DoRect(i, fadeRate)
+		DoRect(window, i, fadeRate)
 	}
 
 	if SelectedRect != SelectedNone {
@@ -219,23 +217,23 @@ func AppUpdate(fadeRate float32) {
 
 	/* Display the panel on the left. Make it grow with the screen width. */
 	var width int
-	if screen.Width < 400 {
+	if window.Width() < 400 {
 		width = 100
 	} else {
-		width = screen.Width / 4
+		width = window.Width() / 4
 	}
 	ui.Layout.WidthForAll = width
 
 	if NumRects < MaxNumRects {
 		if ui.Button(imgo.ID(&MakeRectID), "Create New") {
-			MakeRect()
+			MakeRect(window)
 		}
 	}
 
 	ui.Layout.CurrentY += 10
 
 	if SelectedRect != SelectedNone {
-		EditSelection()
+		EditSelection(window)
 	}
 
 	ui.Layout.WidthForAll = imgo.WidthAuto
@@ -255,7 +253,7 @@ func init() {
 	Rects[0].Y0 = 100
 	Rects[0].X1 = 500
 	Rects[0].Y1 = 400
-	Rects[0].Color = imgo.ColorRGB(200, 50, 50)
+	Rects[0].Color = gr.ColorRGB(200, 50, 50)
 	Rects[0].HotAlpha = 200
 
 	Rects[1] = new(AppRect)
@@ -263,7 +261,7 @@ func init() {
 	Rects[1].Y0 = 200
 	Rects[1].X1 = 600
 	Rects[1].Y1 = 700
-	Rects[1].Color = imgo.ColorRGB(50, 50, 200)
+	Rects[1].Color = gr.ColorRGB(50, 50, 200)
 	Rects[1].HotAlpha = 200
 
 	NumRects = 2
@@ -276,8 +274,6 @@ func main() {
 	}
 	defer window.Close()
 
-	ui = &window.UI
-
 	quit := false
 	for !quit {
 		for window.HasEvents() {
@@ -286,14 +282,14 @@ func main() {
 			case imgo.DestroyEvent:
 				quit = true
 			case imgo.PaintEvent:
-				AppUpdate(0)
+				AppUpdate(window, 0)
 				window.PaintEvent()
 			default:
 				window.HandleEvent(event)
 			}
 		}
 
-		AppUpdate(0.05)
+		AppUpdate(window, 0.05)
 		window.PaintEvent()
 	}
 }

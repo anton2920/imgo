@@ -1,5 +1,7 @@
 package imgo
 
+import "github.com/anton2920/imgo/gr"
+
 type Layout struct {
 	Foreground     Color
 	Background     Color
@@ -28,10 +30,10 @@ type Layout struct {
 func DefaultLayout() Layout {
 	var layout Layout
 
-	layout.Foreground = ColorBlack
-	layout.Background = ColorGrey(220)
-	layout.BackgroundDark = ColorDark(ColorGrey(220))
-	layout.BackgroundLite = ColorLite(ColorGrey(220))
+	layout.Foreground = gr.ColorBlack
+	layout.Background = gr.ColorGrey(220)
+	layout.BackgroundDark = gr.ColorDark(gr.ColorGrey(220))
+	layout.BackgroundLite = gr.ColorLite(gr.ColorGrey(220))
 
 	layout.SpacingWidth = 20
 	layout.SpacingHeight = 4

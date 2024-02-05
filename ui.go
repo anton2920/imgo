@@ -31,10 +31,9 @@ type WidgetID struct {
 }
 
 type UI struct {
-	/* TODO(anton2920): do we need this in this form? */
-	GUI GUI
-
-	Layout Layout
+	Renderer Renderer
+	Layout   Layout
+	Font     Font
 
 	/* This is set by whichever widget is hot/active; you can watch for it to check. */
 	IsHot, IsActive bool
@@ -145,12 +144,12 @@ func (ui *UI) ButtonLogicRect(id ID, x, y, width, height int) bool {
 }
 
 func (ui *UI) Button(id ID, label string) bool {
-	return ui.ButtonW(id, label, ui.GUI.GR.TextWidth(label)+ui.Layout.ButtonPaddingWidth*2)
+	return ui.ButtonW(id, label, ui.Font.TextWidth(label)+ui.Layout.ButtonPaddingWidth*2)
 }
 
 func (ui *UI) ButtonToggle(labelUnchecked, labelChecked string, checked *bool) bool {
-	widthUnchecked := ui.GUI.GR.TextWidth(labelUnchecked)
-	widthChecked := ui.GUI.GR.TextWidth(labelChecked)
+	widthUnchecked := ui.Font.TextWidth(labelUnchecked)
+	widthChecked := ui.Font.TextWidth(labelChecked)
 
 	var label string
 	if *checked {
@@ -167,15 +166,15 @@ func (ui *UI) ButtonToggle(labelUnchecked, labelChecked string, checked *bool) b
 }
 
 func (ui *UI) ButtonW(id ID, label string, width int) bool {
-	height := ui.GUI.GR.CharHeight('g') + ui.Layout.ButtonPaddingHeight*2
+	height := ui.Font.CharHeight('g') + ui.Layout.ButtonPaddingHeight*2
 	p := ui.Layout.Put(&width, &height)
 
 	ui.rectOutlined(p.X, p.Y, width, height, ui.color(id), ui.Layout.BackgroundDark)
 
-	centerX := p.X + width/2 - ui.GUI.GR.TextWidth(label)/2
+	centerX := p.X + width/2 - ui.Font.TextWidth(label)/2
 	p.X += ui.Layout.ButtonPaddingWidth
 	p.Y += ui.Layout.ButtonPaddingHeight
-	ui.GUI.GraphText(label, centerX, p.Y, ui.Layout.Foreground)
+	ui.Renderer.GraphText(label, ui.Font, centerX, p.Y, ui.Layout.Foreground)
 
 	return ui.ButtonLogic(id, ui.inRect(p.X, p.Y, width, height))
 }
@@ -280,8 +279,8 @@ func (ui *UI) inRectPlus(x, y, width, height, plus int) bool {
 }
 
 func (ui *UI) rectOutlined(x, y, width, height int, bg, fg Color) {
-	ui.GUI.GraphSolidRectWH(x, y, width, height, bg)
-	ui.GUI.GraphRectWH(x, y, width, height, fg)
+	ui.Renderer.GraphSolidRectWH(x, y, width, height, bg)
+	ui.Renderer.GraphRectWH(x, y, width, height, fg)
 }
 
 func (ui *UI) setActive(id ID) {
@@ -342,10 +341,10 @@ func (ui *UI) SliderRaw(id ID, label string, valueMin, valueMax float32, value *
 
 	const labelWidthAdjustment = 4
 	if label != "" {
-		labelHeight := ui.GUI.GR.CharHeight('g') - ui.Layout.SpacingHeight + 1
-		labelWidth = ui.GUI.GR.TextWidth(label) + labelWidthAdjustment
+		labelHeight := ui.Font.CharHeight('g') - ui.Layout.SpacingHeight + 1
+		labelWidth = ui.Font.TextWidth(label) + labelWidthAdjustment
 		p = ui.Layout.Put(&labelWidth, &labelHeight)
-		ui.GUI.GraphText(label, p.X, p.Y, ui.Layout.Foreground)
+		ui.Renderer.GraphText(label, ui.Font, p.X, p.Y, ui.Layout.Foreground)
 	}
 
 	if sliderWidth == WidthAuto {
@@ -371,7 +370,7 @@ func (ui *UI) SliderRaw(id ID, label string, valueMin, valueMax float32, value *
 		if sliderWidth >= ui.Layout.SliderDotSpacing*n {
 			for i := 0; i < n; i++ {
 				pos := p.X + i*int(float32(sliderWidth)/(valueMax-valueMin))
-				ui.GUI.GraphPoint(pos, p.Y+(tabHeight-sliderHeight)/4, 1, ui.Layout.BackgroundDark)
+				ui.Renderer.GraphPoint(pos, p.Y+(tabHeight-sliderHeight)/4, 1, ui.Layout.BackgroundDark)
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package imgo
+package fonts
 
 var Font21 = []uint32{
 	0x00156020, 0x0a080605, 0x030e100a, 0x0b0a0606, 0x05050605, 0x0a0a0a0a,

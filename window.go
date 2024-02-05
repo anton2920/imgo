@@ -3,6 +3,9 @@ package imgo
 import (
 	"time"
 	"unsafe"
+
+	"github.com/anton2920/imgo/fonts"
+	"github.com/anton2920/imgo/gr"
 )
 
 type WindowFlags uint
@@ -36,12 +39,9 @@ func NewWindow(title string, x, y, width, height int, flags WindowFlags) (*Windo
 		return nil, err
 	}
 
-	chars := make([]Pixmap, 96)
-	start := w.UI.GUI.GR.DecompressFont(Font21, chars)
-	w.UI.GUI.GR.SetFont(chars, start)
 	w.UI.Layout = DefaultLayout()
+	w.UI.Font = gr.DecompressFont(fonts.Font21)
 
-	w.lastPaintEvent = time.Now()
 	w.ResizeEvent(width, height)
 
 	return &w, nil
@@ -99,7 +99,7 @@ func (w *Window) MouseButtonDownEvent(x, y int, button MouseButton) {
 	case Button1:
 		w.UI.LeftDown = true
 		/* TODO(anton2920): is this function really necessary? */
-		// platformMouseCapture(w, true)
+		platformMouseCapture(w, true)
 	case Button2:
 		w.UI.MiddleDown = true
 	case Button3:
@@ -115,7 +115,7 @@ func (w *Window) MouseButtonUpEvent(x, y int, button MouseButton) {
 	case Button1:
 		w.UI.LeftUp = true
 		/* TODO(anton2920): is this function really necessary? */
-		// platformMouseCapture(w, false)
+		platformMouseCapture(w, false)
 	case Button2:
 		w.UI.MiddleUp = true
 	case Button3:
@@ -129,7 +129,7 @@ func (w *Window) MouseMoveEvent(x, y int) {
 }
 
 func (w *Window) PaintEvent() {
-	screen := w.UI.GUI.GR.GetOutput()
+	screen := w.UI.Renderer.pixmap
 	platformDrawPixmap(w, 0, 0, unsafe.Slice((*RGBA)(unsafe.Pointer(unsafe.SliceData(screen.Pixels))), screen.Width*screen.Height), screen.Width, screen.Height, screen.Stride)
 
 	/* Preventing CPU from going wild. */
@@ -146,8 +146,18 @@ func (w *Window) ResizeEvent(width, height int) {
 	w.width = width
 	w.height = height
 
-	screen := w.UI.GUI.GR.AllocPixmap(width, height, AlphaOpaque)
-	w.UI.GUI.GR.SetOutput(screen)
+	screen := w.UI.Renderer.pixmap
+	if (width > screen.Width) || (height > screen.Height) {
+		screen = gr.NewPixmap(width, height, gr.AlphaOpaque)
+	} else {
+		screen.Pixels = screen.Pixels[:width*height]
+		screen.Width = width
+		screen.Height = height
+		screen.Stride = width
+	}
+	w.UI.Renderer.pixmap = screen
+	w.UI.Renderer.active = Rect{0, 0, screen.Width, screen.Height}
+
 	w.Invalidate()
 }
 
