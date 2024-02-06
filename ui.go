@@ -1,3 +1,8 @@
+/* TODO(anton2920):
+ * BUGS:
+ *	1. If active widget is not called, it's impossible to deactivate it.
+ */
+
 package imgo
 
 import (
