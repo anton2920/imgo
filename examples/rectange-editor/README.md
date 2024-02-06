@@ -13,6 +13,8 @@ The application demonstrates various UI features to show that they can be easily
  * custom widgets (the rectangle editor is effectively one)
  * widget animation (the fade-in/out when hovering over)
 
+![image](https://github.com/anton2920/imgo/assets/30488779/fb804919-d18c-4056-b697-eace9c014c2f)
+
 # Copyright
 
 - IMGUI DEMONSTRATION - Sean Barrett, Aug 5, 2005 (public domain)
