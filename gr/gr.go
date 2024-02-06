@@ -15,6 +15,58 @@ func abs(x int) int {
 	return x
 }
 
+/* TODO(anton2920): this is slow!!! */
+func DrawCircle(pixmap Pixmap, bounds Rect, x0, y0, radius int, color Color) {
+	x1 := x0 + radius + radius
+	y1 := y0 + radius + radius
+
+	if x0 >= bounds.X1 {
+		return
+	}
+	if x1 < bounds.X0 {
+		return
+	}
+	if y0 >= bounds.Y1 {
+		return
+	}
+	if y1 < bounds.Y0 {
+		return
+	}
+	if color.Invisible() {
+		return
+	}
+
+	cx := x0 + radius
+	cy := y0 + radius
+
+	x0 = max(x0, bounds.X0)
+	x1 = min(x1, bounds.X1-1)
+
+	y0 = max(y0, bounds.Y0)
+	y1 = min(y1, bounds.Y1-1)
+
+	if color.Opaque() {
+		for y := y0; y < y1; y++ {
+			for x := x0; x < x1; x++ {
+				if (x-cx)*(x-cx)+(y-cy)*(y-cy) <= radius*radius {
+					offset := y*pixmap.Stride + x
+					pixmap.Pixels[offset] = color
+				}
+			}
+		}
+	} else {
+		for y := y0; y < y1; y++ {
+			for x := x0; x < x1; x++ {
+				if (x-cx)*(x-cx)+(y-cy)*(y-cy) <= radius*radius {
+					offset := y*pixmap.Stride + x
+					pixmap.Pixels[offset] = Blend(pixmap.Pixels[offset], color)
+				}
+			}
+		}
+
+	}
+}
+
 func DrawLine(pixmap Pixmap, bounds Rect, x0, y0, x1, y1 int, color Color) {
 	if x0 == x1 {
 		DrawVLine(pixmap, bounds, x0, y0, y1, color)
