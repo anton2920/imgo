@@ -9,6 +9,10 @@ type surface struct {
 
 type Renderer surface
 
+func (r *Renderer) GraphCircle(x0, y0, radius int, color Color) {
+	gr.DrawCircle(r.pixmap, r.active, x0, y0, radius, color)
+}
+
 func (r *Renderer) GraphHLine(y, x0, x1 int, color Color) {
 	gr.DrawHLine(r.pixmap, r.active, y, x0, x1, color)
 }
