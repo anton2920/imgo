@@ -137,7 +137,7 @@ func (w *Window) PaintEvent() {
 	now := time.Now()
 	durationBetweenPaints := now.Sub(w.lastPaintEvent)
 	if durationBetweenPaints < 1000/FPS*time.Millisecond {
-		time.Sleep(1000/FPS*time.Millisecond - durationBetweenPaints)
+		//time.Sleep(1000/FPS*time.Millisecond - durationBetweenPaints)
 	}
 	w.lastPaintEvent = time.Now()
 }
