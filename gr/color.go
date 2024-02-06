@@ -40,7 +40,7 @@ func Blend(dst, src Color) Color {
 	rb := rbDst + ((rbSrc - rbDst) * a >> 8)
 	gDst := dst & 0x00FF00
 	g := gDst + (((src & 0x00FF00) - (dst & 0x00FF00)) * a >> 8)
-	/* NOTE(anton2920): we do not compute a real dest alpha. */
+	/* NOTE(anton2920): we do not compute a real dst alpha. */
 	return (rb & 0xFF00FF) + (g & 0x00FF00) + 0xFF000000
 }
 
@@ -74,7 +74,7 @@ func BlendMultiplyFont(dst, font, src Color) Color {
 	rb := rbDst + ((rbSrc - rbDst) * a >> 8)
 	gDst := dst & 0x00FF00
 	g := gDst + (((src & 0x00FF00) - (dst & 0x00FF00)) * a >> 8)
-	/* NOTE(anton2920): we do not compute a real dest alpha. */
+	/* NOTE(anton2920): we do not compute a real dst alpha. */
 	return (rb & 0xFF00FF) + (g & 0x00FF00) + 0xFF000000
 }
 
