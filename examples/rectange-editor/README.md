@@ -17,5 +17,5 @@ The application demonstrates various UI features to show that they can be easily
 
 # Copyright
 
-- IMGUI DEMONSTRATION - Sean Barrett, Aug 5, 2005 (public domain)
-- imgo - Anton Pavlovskii, 2024- (MIT)
+- IMGUI DEMONSTRATION - Sean Barrett, Aug 5, 2005 (public domain).
+- imgo library - Pavlovskii Anton, 2024 (MIT).
