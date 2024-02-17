@@ -290,6 +290,8 @@ func main() {
 		}
 
 		AppUpdate(window, 0.05)
-		window.PaintEvent()
+
+		const FPS = 60
+		window.PaintEventCapped(FPS)
 	}
 }
