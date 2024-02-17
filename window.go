@@ -131,13 +131,17 @@ func (w *Window) MouseMoveEvent(x, y int) {
 func (w *Window) PaintEvent() {
 	screen := w.UI.Renderer.pixmap
 	platformDrawPixmap(w, 0, 0, unsafe.Slice((*RGBA)(unsafe.Pointer(unsafe.SliceData(screen.Pixels))), screen.Width*screen.Height), screen.Width, screen.Height, screen.Stride)
+}
 
-	/* Preventing CPU from going wild. */
-	const FPS = 60
+func (w *Window) PaintEventCapped(FPS int) {
+	w.PaintEvent()
+
 	now := time.Now()
 	durationBetweenPaints := now.Sub(w.lastPaintEvent)
-	if durationBetweenPaints < 1000/FPS*time.Millisecond {
-		time.Sleep(1000/FPS*time.Millisecond - durationBetweenPaints)
+	targetRate := 1000 / time.Duration(FPS) * time.Millisecond
+
+	if durationBetweenPaints < targetRate {
+		time.Sleep(targetRate - durationBetweenPaints)
 	}
 	w.lastPaintEvent = time.Now()
 }

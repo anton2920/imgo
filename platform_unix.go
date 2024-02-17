@@ -8,6 +8,7 @@ package imgo
 #cgo LDFLAGS: -lX11 -lm -lxcb -lXau -lXdmcp
 
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 */
 import "C"
 import (
@@ -132,6 +133,17 @@ func platformNewWindow(w *Window) error {
 	C.XSelectInput(w.display, w.window, C.ExposureMask|C.KeyPressMask|C.KeyReleaseMask|C.ButtonPressMask|C.ButtonReleaseMask|C.PointerMotionMask|C.StructureNotifyMask)
 
 	C.XStoreName(w.display, w.window, C.CString(w.title))
+
+	if (w.flags & WindowResizable) == 0 {
+		hints := C.XAllocSizeHints()
+		hints.flags = C.PMinSize | C.PMaxSize
+		hints.min_width = C.int(w.width)
+		hints.min_height = C.int(w.height)
+		hints.max_width = C.int(w.width)
+		hints.max_height = C.int(w.height)
+		C.XSetWMNormalHints(w.display, w.window, hints)
+		C.XFree(unsafe.Pointer(hints))
+	}
 
 	if (w.flags & WindowHidden) == 0 {
 		C.XMapWindow(w.display, w.window)

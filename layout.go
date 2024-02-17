@@ -20,7 +20,7 @@ type Layout struct {
 	SliderTabWidth         int
 	SliderTabHeight        int
 	SliderSlotHeight       int
-	SliderSlotDefaultWidth int /* only used if width can't be computer otherwise. */
+	SliderSlotDefaultWidth int /* only used if width can't be computed otherwise. */
 
 	SliderDotSpacing int
 
