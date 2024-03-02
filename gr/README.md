@@ -1,7 +1,7 @@
-# gr - portable 32-bit graphics library
+# gr
 
-Simple 550-line 32-bit graphics library.
+Simple 550-line portable 32-bit graphics library.
 
-# Copyright
-- 32-bit graphics library - Sean Barrett, Nov 9, 2003 (public domain)
-- imgo - Anton Pavlovskii, 2024- (MIT)
+## Copyright
+
+Pavlovskii Anton, 2024 (MIT). See [LICENSE](../LICENSE) for more details.
