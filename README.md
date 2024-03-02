@@ -1,8 +1,15 @@
-# imgo - Immediate Mode UI library in Pure Go
+# imgo
 
-This is a simple UI library inspired by Sean Barrett's [demonstration](http://silverspaceship.com/inner/imgui/) from 2005.
+imgo is a simple immediate mode UI library in pure Go. It was inspired by Sean Barrett's [demonstration](http://silverspaceship.com/inner/imgui/) from 2005.
 
-# Copyright
-- 32-bit graphics library - Sean Barrett, Nov 9, 2003 (public domain)
-- IMGUI DEMONSTRATION - Sean Barrett, Aug 5, 2005 (public domain)
-- imgo - Anton Pavlovskii, 2024- (MIT)
+## Limitations
+
+Currently library uses CGO, despite claiming otherwise. It supports only X Window System.
+
+There are numerous bugs and misfeatures. For example, if you allow sliders to autoscale their width, they will try to fit their label. But if you turn on numeric display, the label can change widths depending on the value, causing the scrollbar to change widths as the value changes (causing a feedback loop since scrollbar changes widths out from under the mouse pointer!). Also grep for `BUGS` to see more.
+
+The main drawback is a dearth of widgets. No radio buttons, no scrollbars and scrollable regions, no combo boxes, no menus.
+
+## Copyright
+
+Pavlovskii Anton, 2024 (MIT). See [LICENSE](LICENSE) for more details.

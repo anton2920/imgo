@@ -7,6 +7,6 @@ This example shows how easy it is to create a grid of elements, which scales wit
 ![image](https://github.com/anton2920/imgo/assets/30488779/ff9c7d3c-c712-4eb7-b329-4a5c8ff4c29b)
 
 
-# Copyright
+## Copyright
 
-- Pavlovskii Anton, 2024 (MIT).
+Pavlovskii Anton, 2024 (MIT).  See [LICENSE](../LICENSE) for more details.

@@ -1,8 +1,8 @@
 # Rectangle editor
 
-This is a very simple sample application built on top of a "one-pass" IMGUI implementation, in which every frame every widget is called exactly once.
+This is a very simple sample application built on top of a «one-pass» IMGUI implementation, in which every frame every widget is called exactly once.
 
-The sample application is a "rectangle editor". You can move rectangles by dragging them, resize them by dragging their edges and corners, and change their color using the provided RGB sliders. Deselect by clicking on the background. Obvious this is not a very interesting program in practice, but it offers a straightforward demonstration.
+The sample application is a «rectangle editor». You can move rectangles by dragging them, resize them by dragging their edges and corners, and change their color using the provided RGB sliders. Deselect by clicking on the background. Obvious this is not a very interesting program in practice, but it offers a straightforward demonstration.
 
 The application demonstrates various UI features to show that they can be easily implemented in IMGUI:
 
@@ -15,7 +15,6 @@ The application demonstrates various UI features to show that they can be easily
 
 ![image](https://github.com/anton2920/imgo/assets/30488779/fb804919-d18c-4056-b697-eace9c014c2f)
 
-# Copyright
+## Copyright
 
-- IMGUI DEMONSTRATION - Sean Barrett, Aug 5, 2005 (public domain).
-- imgo library - Pavlovskii Anton, 2024 (MIT).
+Pavlovskii Anton, 2024 (MIT). See [LICENSE](LICENSE) for more details.

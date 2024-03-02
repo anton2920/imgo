@@ -11,6 +11,6 @@ It also shows how basic mouse control can be implemented (for play/pause, hiding
 ![image](https://github.com/anton2920/imgo/assets/30488779/95c069c8-8c3d-4c7c-bf17-64368fe154ec)
 ![image](https://github.com/anton2920/imgo/assets/30488779/36bf8631-2da5-4b3a-b0ab-86cd57200fe3)
 
-# Copyright
+## Copyright
 
-- Pavlovskii Anton, 2024 (MIT).
+Pavlovskii Anton, 2024 (MIT). See [LICENSE](../LICENSE) for more details.
